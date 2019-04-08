@@ -3,6 +3,8 @@ use std::fs::File;
 use std::error::Error;
 use std::io::{BufReader, BufRead, Read};
 
+const TAPE_SIZE: usize = 30;
+
 enum Instruction {
     MoveRight,
     MoveLeft,
@@ -67,16 +69,29 @@ fn main() -> Result<(), String> {
     };
 
     let instructions = parse(input_file)?;
-    let mut tape = vec![0u8; 25];
 
     let mut pc: usize = 0;
     let mut pointer: usize = 0;
+    let mut tape = vec![0u8; TAPE_SIZE];
     let program_size = instructions.len();
 
     while pc < program_size {
         match instructions[pc] {
-            Instruction::MoveRight => pointer += 1,
-            Instruction::MoveLeft => pointer -= 1,
+            Instruction::MoveRight => {
+                pointer += 1;
+
+                if pointer == TAPE_SIZE {
+                    println!("WRAPPED!");
+                    pointer = 0;
+                }
+            },
+            Instruction::MoveLeft => {
+                if pointer == 0 {
+                    pointer = TAPE_SIZE - 1;
+                } else {
+                    pointer -= 1;
+                }
+            },
             Instruction::Increment => tape[pointer] = tape[pointer].wrapping_add(1u8),
             Instruction::Decrement => tape[pointer] = tape[pointer].wrapping_sub(1u8),
             Instruction::Write => print!("{}", tape[pointer] as char),
