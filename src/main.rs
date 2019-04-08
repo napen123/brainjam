@@ -81,7 +81,6 @@ fn main() -> Result<(), String> {
                 pointer += 1;
 
                 if pointer == TAPE_SIZE {
-                    println!("WRAPPED!");
                     pointer = 0;
                 }
             },
