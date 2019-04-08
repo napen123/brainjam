@@ -37,7 +37,7 @@ fn parse(input_file: File) -> Result<Vec<Instruction>, String> {
                         instructions[p] = Instruction::JumpZero(pos);
                         instructions.push(Instruction::JumpNotZero(p))
                     } else {
-                        return Err("Mismatched jump instructions.".to_owned());
+                        return Err("Unmatched jump instructions.".to_owned());
                     }
                 },
                  _ => pos -= 1
@@ -45,6 +45,10 @@ fn parse(input_file: File) -> Result<Vec<Instruction>, String> {
 
             pos += 1;
         }
+    }
+
+    if stack.len() > 0 {
+        return Err("Unmatched jump instructions.".to_owned());
     }
 
     Ok(instructions)
